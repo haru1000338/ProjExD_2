@@ -33,9 +33,12 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
 def gameover():
     """
     Game Overを表示する関数
+    こうかとんと爆弾が衝突したときに呼び出される
     """
+    # 文字の設定
     font = pg.font.Font(None, 80)
     text = font.render("Game Over", True, (255, 255, 255))
+    #こうかとんの画像
     make_img = pg.image.load("fig/8.png")
     make_img = pg.transform.rotozoom(make_img, 0, 1.0)
     right_make_rct = make_img.get_rect(center=(WIDTH // 2 - 200, HEIGHT // 2))
@@ -45,7 +48,6 @@ def gameover():
     overlay = pg.Surface((WIDTH, HEIGHT))
     overlay.set_alpha(128)  # 半透明にする
     overlay.fill((0, 0, 0))  # 黒で塗りつぶす
-
 
     screen = pg.display.get_surface()
     screen.blit(overlay, (0, 0))
