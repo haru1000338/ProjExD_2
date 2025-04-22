@@ -1,6 +1,7 @@
 import os
 import random
 import sys
+import time
 import pygame as pg
 
 
@@ -29,11 +30,36 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return (yoko, tate)
 
+def gameover():
+    """
+    Game Overを表示する関数
+    """
+    font = pg.font.Font(None, 80)
+    text = font.render("Game Over", True, (255, 255, 255))
+    make_img = pg.image.load("fig/8.png")
+    make_img = pg.transform.rotozoom(make_img, 0, 1.0)
+    right_make_rct = make_img.get_rect(center=(WIDTH // 2 - 200, HEIGHT // 2))
+    left_make_rct = make_img.get_rect(center=(WIDTH // 2 + 200, HEIGHT // 2))
+    
+    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    overlay = pg.Surface((WIDTH, HEIGHT))
+    overlay.set_alpha(128)  # 半透明にする
+    overlay.fill((0, 0, 0))  # 黒で塗りつぶす
+
+
+    screen = pg.display.get_surface()
+    screen.blit(overlay, (0, 0))
+    screen.blit(text, text_rect)
+    screen.blit(make_img, right_make_rct)
+    screen.blit(make_img, left_make_rct)
+    pg.display.update()
+
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
-
+ 
     # こうかとん初期化
     bg_img = pg.image.load("fig/pg_bg.jpg")    
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
@@ -60,6 +86,8 @@ def main():
 
         # こうかとんRectと爆弾Rectの衝突判定
         if kk_rct.colliderect(bb_rct):
+            gameover()
+            time.sleep(5)  # 5秒待つ
             return
 
         key_lst = pg.key.get_pressed()
