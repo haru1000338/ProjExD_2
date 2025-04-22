@@ -56,6 +56,23 @@ def gameover():
     screen.blit(make_img, left_make_rct)
     pg.display.update()
 
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """
+    爆弾の画像を初期化する関数
+    戻り値：爆弾の画像リスト, 加速度リスト
+    """
+    bb_imgs = []  # 爆弾の画像リスト
+    bb_accs = [a for a in range(1, 11)]  # 加速度のリスト
+
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0, 0, 0))
+        bb_imgs.append(bb_img)
+
+    return bb_imgs, bb_accs # 爆弾の画像リスト, 加速度リスト
+ 
+
 
 
 def main():
@@ -78,6 +95,12 @@ def main():
 
     clock = pg.time.Clock()
     tmr = 0
+
+
+    bb_imgs, bb_accs = init_bb_imgs()  # 爆弾の画像リスト, 加速度リスト
+    avx = vx*bb_accs[min(tmr//500), 9]
+    avy = vy*bb_accs[min(tmr//500), 9]  # 爆弾の加速度
+    bb_img = bb_imgs[min(tmr//500, 9)]  # 爆弾の画像
 
 
     while True:
@@ -110,7 +133,7 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):  # 画面外なら
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
-        bb_rct.move_ip(vx, vy)  # 爆弾移動 
+        bb_rct.move_ip(avx, avy)  # 爆弾移動 
         yoko, tate = check_bound(bb_rct)
         if not yoko:  # 左右が画面外なら
             vx *= -1
